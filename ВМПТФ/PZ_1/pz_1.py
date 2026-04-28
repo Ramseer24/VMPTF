@@ -1,60 +1,85 @@
-# ПРАКТИЧНЕ ЗАНЯТТЯ № 1. ОСНОВИ PYTHON ТА РОБОТА З ДАНИМИ
+# --- ПРАКТИЧНА РОБОТА №1 ---
 
-# --- Рівень 1 ---
-
-# Завдання 1: Виведення чисел від 1 до 10 [cite: 183]
-print("--- Завдання 1: Числа від 1 до 10 ---")
-for i in range(1, 11):
-    print(i)
-print("-" * 30)
-
-
-# --- Рівень 2 ---
-
-# Завдання 2: Список чисел від 1 до 20 та їх квадрати [cite: 189]
-# Списки — це змінювані послідовності
-print("\n--- Завдання 2: Числа та їх квадрати (1-20) ---")
-numbers = list(range(1, 21))
-for n in numbers:
-    square = n ** 2
-    print(f"Число: {n}, Квадрат: {square}")
-print("-" * 30)
+# Рівень 1: Завдання 3
+def task_sum():
+    print("\n--- Додавання двох чисел ---")
+    try:
+        # Отримуємо введення від користувача [cite: 126]
+        num1 = float(input("Введіть перше число: "))
+        num2 = float(input("Введіть друге число: "))
+        # Виводимо суму [cite: 185]
+        print(f"Сума: {num1 + num2}")
+    except ValueError:
+        print("Помилка: Введіть числове значення.")
 
 
-# --- Рівень 3 ---
+# Рівень 2: Завдання 3
+def is_prime_number():
+    print("\n--- Перевірка на просте число ---")
+    try:
+        n = int(input("Введіть ціле число: "))  # [cite: 132]
+        if n <= 1:
+            print(f"Число {n} не є простим.")  # [cite: 190]
+            return
 
-# Завдання 1: Розрахунок віку за роком народження [cite: 193]
-# Для отримання даних використовуємо input(),
-# а для математичних операцій перетворюємо рядок у ціле число за допомогою int().
-print("\n--- Завдання 3: Розрахунок віку ---")
-try:
-    birth_year = int(input("Введіть ваш рік народження: "))
-    current_year = 2026  # Поточний рік за умовами системи
-    age = current_year - birth_year
-    print(f"Ваш вік: {age} років.")
-except ValueError:
-    print("Помилка: будь ласка, введіть числове значення року.")
-print("-" * 30)
+        for i in range(2, int(n ** 0.5) + 1):
+            if n % i == 0:
+                print(f"Число {n} не є простим.")
+                return
+        print(f"Число {n} — просте!")
+    except ValueError:
+        print("Помилка: Потрібно ввести ціле число.")
 
 
-# --- Рівень 4 ---
+# Рівень 3: Завдання 3
+class Calculator:  #
+    def add(self, a, b): return a + b
 
-# Завдання 4: Алгоритм швидкого сортування (QuickSort)
-print("\n--- Завдання 4: Швидке сортування (QuickSort) ---")
+    def sub(self, a, b): return a - b
 
-def quicksort(arr):
-    if len(arr) <= 1:
-        return arr
-    pivot = arr[len(arr) // 2]  # Вибір опорного елемента
-    left = [x for x in arr if x < pivot]
-    middle = [x for x in arr if x == pivot]
-    right = [x for x in arr if x > pivot]
-    return quicksort(left) + middle + quicksort(right)
+    def mul(self, a, b): return a * b
 
-# Приклад виконання
-unsorted_array = [12, 4, 5, 6, 7, 3, 1, 15, 2, 8]
-sorted_array = quicksort(unsorted_array)
+    def div(self, a, b):
+        return a / b if b != 0 else "Помилка: Ділення на нуль"
 
-print(f"Початковий масив: {unsorted_array}")
-print(f"Відсортований масив: {sorted_array}")
-print("-" * 30)
+
+# Рівень 4: Завдання 3
+class Library:  # Клас "Книготека" [cite: 200]
+    def __init__(self):
+        self.books = []  # [cite: 28]
+
+    def add_book(self, title):
+        self.books.append(title)
+        print(f"Книгу '{title}' додано.")
+
+    def remove_book(self, title):
+        if title in self.books:
+            self.books.remove(title)
+            print(f"Книгу '{title}' видалено.")
+        else:
+            print("Такої книги немає.")
+
+    def show_all(self):
+        print(f"Список книг: {self.books}" if self.books else "Бібліотека порожня.")
+
+
+# Головна функція для запуску всього проєкту
+def main():
+    # Виклик функцій рівнів 1 та 2
+    task_sum()
+    is_prime_number()
+
+    # Демонстрація Калькулятора (Рівень 3)
+    calc = Calculator()
+    print(f"\nКалькулятор: {calc.mul(10, 5)}")
+
+    # Демонстрація Книготеки (Рівень 4)
+    my_lib = Library()
+    my_lib.add_book("Python для профі")
+    my_lib.add_book("профі")
+    my_lib.show_all()
+    my_lib.remove_book("Python для профі")
+
+
+if __name__ == "__main__":
+    main()

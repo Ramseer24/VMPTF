@@ -1,0 +1,9 @@
+[
+  {"name": "Лев", "type": "Ссавець", "photo": "/images/Lion.jpg"},
+  {"name": "Орел", "type": "Птах", "photo": "/images/eagle.jpg"},
+  {"name": "Тигр", "type": "Ссавець", "photo": "/images/tiger.jpg"},
+  {"name": "Акула", "type": "Риба", "photo": "/images/shark.jpg"},
+  {"name": "Вовк", "type": "Ссавець", "photo": "/images/vovk.jpg"},
+  {"name": "Сова", "type": "Птах", "photo": "/images/owl.jpg"},
+  {"name": "Змія", "type": "Плазун", "photo": "/images/snake.jpg"}
+]

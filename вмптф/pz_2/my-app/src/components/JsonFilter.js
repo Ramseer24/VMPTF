@@ -1,83 +1,109 @@
 import React, { useState } from 'react';
 
 const JsonFilter = () => {
-    // Розширені вхідні дані (імітація великого JSON-файлу)
-    const initialData = [
-        { "id": 1, "name": "Лев", "type": "Ссавець", "origin": "Африка", "status": "Вільний" },
-        { "id": 2, "name": "Орел", "type": "Птах", "origin": "Європа", "status": "Вільний" },
-        { "id": 3, "name": "Акула", "type": "Риба", "origin": "Океан", "status": "Захищений" },
-        { "id": 4, "name": "Тигр", "type": "Ссавець", "origin": "Азія", "status": "Захищений" },
-        { "id": 5, "name": "Сова", "type": "Птах", "origin": "Ліс", "status": "Вільний" },
-        { "id": 6, "name": "Змія", "type": "Плазун", "origin": "Степ", "status": "Вільний" },
-        { "id": 7, "name": "Кіт", "type": "Ссавець", "origin": "Дім", "status": "Вільний" },
-        { "id": 8, "name": "Вовк", "type": "Ссавець", "origin": "Тайга", "status": "Вільний" },
-        { "id": 9, "name": "Слон", "type": "Ссавець", "origin": "Савана", "status": "Захищений" },
-        { "id": 10, "name": "Пінгвін", "type": "Птах", "origin": "Антарктида", "status": "Вільний" }
-    ];
+  const [jsonData, setJsonData] = useState(null);
+  const [filteredData, setFilteredData] = useState(null);
+  const [filterValue, setFilterValue] = useState('');
+  const [error, setError] = useState('');
 
-    // Стан для значення фільтра
-    const [filterValue, setFilterValue] = useState('');
+  // Обробка завантаження файлу
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    // Логіка фільтрації: шукаємо збіги в назві, типі або походженні (origin)
-    const filteredData = initialData.filter(item => {
-        const searchTerm = filterValue.toLowerCase();
-        return (
-            item.name.toLowerCase().includes(searchTerm) ||
-            item.type.toLowerCase().includes(searchTerm) ||
-            item.origin.toLowerCase().includes(searchTerm)
-        );
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const parsedData = JSON.parse(e.target.result);
+        
+        // Перевіряємо, чи є дані масивом (найкраще підходить для фільтрації)
+        const dataArray = Array.isArray(parsedData) ? parsedData : [parsedData];
+        
+        setJsonData(dataArray);
+        setFilteredData(dataArray);
+        setError('');
+      } catch (err) {
+        setError('Помилка: невірний формат JSON-файлу.');
+        setJsonData(null);
+        setFilteredData(null);
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  // Обробка введення тексту фільтра
+  const handleFilterChange = (event) => {
+    const value = event.target.value;
+    setFilterValue(value);
+    applyFilter(jsonData, value);
+  };
+
+  // Логіка фільтрації
+  const applyFilter = (data, filterText) => {
+    if (!data) return;
+
+    if (!filterText.trim()) {
+      setFilteredData(data);
+      return;
+    }
+
+    const lowerCaseFilter = filterText.toLowerCase();
+
+    // Фільтруємо масив об'єктів: залишаємо ті, де хоча б одне значення містить текст фільтра
+    const filtered = data.filter((item) => {
+      return Object.values(item).some((val) =>
+        String(val).toLowerCase().includes(lowerCaseFilter)
+      );
     });
 
-    return (
-        <div style={{
-            padding: '20px',
-            border: '2px solid #3498db',
-            borderRadius: '10px',
-            margin: '20px 0',
-            backgroundColor: '#fdfdfd'
+    setFilteredData(filtered);
+  };
+
+  return (
+    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+      <h2>Фільтр JSON даних</h2>
+
+      <div style={{ marginBottom: '15px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>
+          <strong>Завантажити JSON файл:</strong>
+        </label>
+        <input 
+          type="file" 
+          accept=".json" 
+          onChange={handleFileUpload} 
+        />
+      </div>
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      <div style={{ marginBottom: '20px' }}>
+        <label style={{ display: 'block', marginBottom: '5px' }}>
+          <strong>Значення фільтра:</strong>
+        </label>
+        <input
+          type="text"
+          value={filterValue}
+          onChange={handleFilterChange}
+          placeholder="Введіть текст для фільтрації..."
+          disabled={!jsonData}
+          style={{ width: '100%', padding: '8px', boxSizing: 'border-box' }}
+        />
+      </div>
+
+      <div>
+        <h3>Відфільтровані дані:</h3>
+        <pre style={{ 
+          backgroundColor: '#f4f4f4', 
+          padding: '15px', 
+          borderRadius: '5px',
+          overflowX: 'auto',
+          maxHeight: '400px'
         }}>
-            <h2 style={{ color: '#2980b9' }}>Рівень 2: Розширений фільтр JSON</h2>
-
-            <div style={{ marginBottom: '15px' }}>
-                <label style={{ fontWeight: 'bold' }}>Пошук за ключовим словом: </label>
-                <input
-                    type="text"
-                    placeholder="Тип, назва або регіон..."
-                    value={filterValue}
-                    onChange={(e) => setFilterValue(e.target.value)}
-                    style={{
-                        padding: '10px',
-                        width: '300px',
-                        borderRadius: '5px',
-                        border: '1px solid #3498db',
-                        outline: 'none'
-                    }}
-                />
-            </div>
-
-            <div style={{ marginTop: '20px' }}>
-                <p><strong>Результат фільтрації (JSON формат):</strong></p>
-                {/* Використовуємо JSON.stringify для перетворення масиву в текст */}
-                <pre style={{
-                    background: '#1e1e1e',
-                    color: '#9cdcfe',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    overflowX: 'auto',
-                    fontSize: '13px',
-                    lineHeight: '1.5',
-                    maxHeight: '400px',
-                    border: '1px solid #555'
-                }}>
-                    {JSON.stringify(filteredData, null, 2)}
-                </pre>
-            </div>
-
-            <div style={{ marginTop: '10px', color: '#555', fontStyle: 'italic' }}>
-                Відображено об'єктів: {filteredData.length} із {initialData.length}
-            </div>
-        </div>
-    );
+          {filteredData ? JSON.stringify(filteredData, null, 2) : 'Завантажте файл для відображення даних.'}
+        </pre>
+      </div>
+    </div>
+  );
 };
 
 export default JsonFilter;

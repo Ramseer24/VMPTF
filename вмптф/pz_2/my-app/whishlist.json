@@ -1,0 +1,20 @@
+[
+  {
+    "title": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+    "genre": "Survival Horror",
+    "price": 1600,
+    "on_sale": false
+  },
+  {
+    "title": "Baldur's Gate 3",
+    "genre": "RPG",
+    "price": 900,
+    "on_sale": true
+  },
+  {
+    "title": "Grim Dawn",
+    "genre": "Action RPG",
+    "price": 250,
+    "on_sale": true
+  }
+]

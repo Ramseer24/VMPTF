@@ -1,0 +1,26 @@
+[
+  {
+    "id": "101",
+    "make": "Volkswagen",
+    "model": "Golf",
+    "year": 2019,
+    "vin_verified": true,
+    "error_message": null
+  },
+  {
+    "id": "102",
+    "make": "Audi",
+    "model": "A6",
+    "year": 2021,
+    "vin_verified": false,
+    "error_message": "Invalid format"
+  },
+  {
+    "id": "103",
+    "make": "Toyota",
+    "model": "Camry",
+    "year": 2022,
+    "vin_verified": true,
+    "error_message": null
+  }
+]

@@ -5,26 +5,34 @@
     <title>Журнал консьєржа</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        /* Стилі для нового блоку тривог */
         #emergency-alert-box {
-            padding: 15px; margin-bottom: 20px; border: 2px solid #ff0000;
-            background-color: #fff0f0; color: #d8000c; display: none;
-            border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+            border: 2px solid red;
+            background: #fff0f0;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        #alert-list {
+            margin-bottom: 0;
+            color: #d8000c;
         }
         table { width: 100%; border-collapse: collapse; background-color: white; }
         th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
         th { background-color: #f4f4f4; }
-        .status-badge { font-weight: bold; text-transform: uppercase; }
+        .status-badge { font-weight: bold; text-transform: uppercase; color: red; }
     </style>
 </head>
 <body>
 
     <div id="emergency-alert-box">
-        <span class="status-badge">⚠️ Увага:</span>
-        <span id="alert-status"></span>
-        <div style="font-size: 0.8em; margin-top: 5px;" id="alert-time"></div>
+        <h3 style="margin-top: 0; color: red;">⚠️ АКТИВНІ ТРИВОГИ:</h3>
+        <ul id="alert-list"></ul>
     </div>
 
-    <h1>Список відвідувачів </h1>
+    <h1>Список відвідувачів</h1>
 
     <table>
         <thead>
@@ -58,7 +66,7 @@
         </tbody>
     </table>
 
-    <p><a href="/admin/">Перейти в адмінку для керування </a></p>
+    <p><a href="/admin/">Перейти в адмінку для керування</a></p>
 
     <script>
         function updateEmergencyStatus() {
@@ -66,17 +74,40 @@
                 .then(response => response.json())
                 .then(data => {
                     const alertBox = document.getElementById('emergency-alert-box');
-                    if (data.is_active) {
-                        document.getElementById('alert-status').innerText = data.status;
-                        document.getElementById('alert-time').innerText = "Час: " + data.timestamp;
+                    const alertList = document.getElementById('alert-list');
+
+                    // Обробка даних: якщо прийшов масив — фільтруємо активні,
+                    // якщо об'єкт — робимо з нього масив
+                    let activeAlerts = [];
+                    if (Array.isArray(data)) {
+                        activeAlerts = data.filter(a => a.is_active);
+                    } else if (data && data.is_active) {
+                        activeAlerts = [data];
+                    }
+
+                    if (activeAlerts.length > 0) {
+                        alertList.innerHTML = ''; // Очищуємо список перед додаванням нових
+                        activeAlerts.forEach(alert => {
+                            const li = document.createElement('li');
+                            // Використовуємо або .status/timestamp, або .status_text/updated_at залежно від вашого API
+                            const text = alert.status || alert.status_text || "Невідома тривога";
+                            const time = alert.timestamp || alert.updated_at || "";
+
+                            li.innerHTML = `<strong>${text}</strong> ${time ? '(Оновлено: ' + time + ')' : ''}`;
+                            alertList.appendChild(li);
+                        });
                         alertBox.style.display = 'block';
                     } else {
                         alertBox.style.display = 'none';
                     }
-                });
+                })
+                .catch(error => console.error('Помилка API:', error));
         }
+
+        // Перший запуск
         updateEmergencyStatus();
-        setInterval(updateEmergencyStatus, 10000); // Оновлення кожні 10 сек
+        // Оновлення кожні 5 секунд
+        setInterval(updateEmergencyStatus, 5000);
     </script>
 </body>
 </html>

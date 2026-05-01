@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Надзвичайні ситуації</title>
+</head>
+<body>
+    <h1 style="color: red;">Оповіщення про небезпеку</h1>
+    <div id="alert-box">Завантаження даних...</div>
+
+    <script>
+        fetch('/api/alert/')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('alert-box').innerText = data.alert;
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Консьєрж Сервіс</title>
+</head>
+<body>
+    <h1>Журнал відвідувачів</h1>
+    <ul>
+        {% for visitor in visitors %}
+            <li>{{ visitor.full_name }} — Вхід: {{ visitor.entry_time }}</li>
+        {% empty %}
+            <li>Відвідувачів немає.</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Бронювання та гості</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Гість</th>
+                <th>Кімната</th>
+                <th>Заїзд</th>
+                <th>Виїзд</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in bookings %}
+            <tr>
+                <td>{{ booking.guest_name }}</td>
+                <td>{{ booking.room.number }}</td>
+                <td>{{ booking.check_in }}</td>
+                <td>{{ booking.check_out }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

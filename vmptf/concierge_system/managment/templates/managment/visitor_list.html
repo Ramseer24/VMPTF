@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Журнал консьєржа</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; }
+        #emergency-alert-box {
+            padding: 15px; margin-bottom: 20px; border: 2px solid #ff0000;
+            background-color: #fff0f0; color: #d8000c; display: none;
+            border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        table { width: 100%; border-collapse: collapse; background-color: white; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .status-badge { font-weight: bold; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <div id="emergency-alert-box">
+        <span class="status-badge">⚠️ Увага:</span>
+        <span id="alert-status"></span>
+        <div style="font-size: 0.8em; margin-top: 5px;" id="alert-time"></div>
+    </div>
+
+    <h1>Список відвідувачів </h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ПІБ відвідувача</th>
+                <th>Кімната</th>
+                <th>Час входу</th>
+                <th>Час виходу</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visitor in visitors %}
+            <tr>
+                <td>{{ visitor.full_name }}</td>
+                <td>
+                    {{ visitor.room.number|default:"—" }}
+                    {% if visitor.room %}
+                        {% if visitor.room.is_currently_occupied %}
+                            <small style="color: red;">(Зайнята)</small>
+                        {% else %}
+                            <small style="color: green;">(Вільна)</small>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ visitor.entry_time|date:"H:i (d.m.Y)" }}</td>
+                <td>{{ visitor.exit_time|date:"H:i (d.m.Y)"|default:"В приміщенні" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" style="text-align: center;">Журнал порожній</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="/admin/">Перейти в адмінку для керування </a></p>
+
+    <script>
+        function updateEmergencyStatus() {
+            fetch('/api/emergency/')
+                .then(response => response.json())
+                .then(data => {
+                    const alertBox = document.getElementById('emergency-alert-box');
+                    if (data.is_active) {
+                        document.getElementById('alert-status').innerText = data.status;
+                        document.getElementById('alert-time').innerText = "Час: " + data.timestamp;
+                        alertBox.style.display = 'block';
+                    } else {
+                        alertBox.style.display = 'none';
+                    }
+                });
+        }
+        updateEmergencyStatus();
+        setInterval(updateEmergencyStatus, 10000); // Оновлення кожні 10 сек
+    </script>
+</body>
+</html>

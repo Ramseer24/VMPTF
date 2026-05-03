@@ -11,7 +11,7 @@ def visitor_list(request):
 
 
 def emergency_alert(request):
-    # Отримуємо всі активні тривоги
+
     active_alerts = EmergencyStatus.objects.filter(is_active=True)
 
     alerts_data = [{

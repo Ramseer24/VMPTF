@@ -33,6 +33,18 @@ const ReviewsApp = () => {
 
             <hr />
             <label>Показувати по: </label>
+            <input type = "number"
+                min = "1"
+                value = {itemsPerPage}
+                onChange={(e) => {const val = Number(e.target.value);
+                if (val > 0) {
+                setItemsPerPage(val); setCurrentPage(1);}
+                }}
+                style = {{width: '50px'}}
+            />
+            
+
+
             <select onChange={(e) => {setItemsPerPage(Number(e.target.value)); setCurrentPage(1)}}>
                 <option value="2">2</option>
                 <option value="5">5</option>
